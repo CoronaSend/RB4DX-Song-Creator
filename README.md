@@ -41,6 +41,16 @@ csc.exe /target:winexe /win32icon:songtool.ico /out:SongTool.exe /r:System.Windo
 (C# 5 / .NET Framework 4 compiler.) Command-line build of a single song:
 `runtime\python.exe build_song.py song.mp3 --title "Title" --artist "Artist"`
 
+## Credits
+
+This tool would not exist without these projects - huge thanks to their authors:
+
+- **[Onyx](https://github.com/mtolly/onyx)** by Michael Tolly (mtolly) - builds the Rock Band 3 CON files (GPL v3).
+- **[LibForge / ForgeTool](https://github.com/mtolly/LibForge)** by Maxton, with the fork maintained by LlysiX and mtolly - converts CON files to PS4 packages (LGPL/GPL).
+- **RB4DX** and the Rock Band modding community.
+- [librosa](https://librosa.org), numpy, scipy, mido, Pillow, FFmpeg and the other open-source libraries listed in `THIRD-PARTY-NOTICES.md`.
+- Cover art lookup uses the iTunes Search API; free music search uses the Internet Archive and Jamendo.
+
 ## Legal
 
 - Use only music you own or have the right to use. This tool does not provide or download copyrighted commercial music; WEB SEARCH lists only free / Creative Commons sources.
