@@ -1,0 +1,13 @@
+runtime/
+onyx/
+forge_official/
+build/
+PS4 Packages/
+__pycache__/
+settings.ini
+ps4_ip.txt
+jamendo_key.txt
+update_url.txt
+*.zip
+dist/
+SongTool.exe
