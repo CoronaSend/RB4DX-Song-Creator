@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 build_song.py - MP3 -> RB3 custom song .con, built by Onyx.
@@ -23,7 +23,7 @@ import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 
 try:
     import truststore

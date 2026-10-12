@@ -266,7 +266,11 @@ class SongTool : Form
         list.Dock = DockStyle.Fill; listHost.Controls.Add(list); Round(list, 12);
         var logHost = new Panel { Dock = DockStyle.Fill, BackColor = BG, Padding = new Padding(12, 0, 12, 12) };
         log.Dock = DockStyle.Fill; logHost.Controls.Add(log); Round(log, 12);
-        Controls.Add(logHost); Controls.Add(prog); Controls.Add(listHost); Controls.Add(toolsRow); Controls.Add(ps4row); Controls.Add(opts);         Controls.Add(drop); Controls.Add(stripe); Controls.Add(header);
+        var footer = new Panel { Dock = DockStyle.Bottom, Height = 40, BackColor = BG };
+        var creditsBtn = Btn("CREDITS", Color.FromArgb(70, 70, 90), 12, 100); creditsBtn.Top = 4; creditsBtn.Height = 28;
+        creditsBtn.Click += (s, e) => ShowCredits();
+        footer.Controls.Add(creditsBtn);
+        Controls.Add(logHost); Controls.Add(footer); Controls.Add(prog); Controls.Add(listHost); Controls.Add(toolsRow); Controls.Add(ps4row); Controls.Add(opts);         Controls.Add(drop); Controls.Add(stripe); Controls.Add(header);
         Style(this);
                 drop.DragEnter += (s, e) => { ((DropZone)drop).Hot = true; drop.Invalidate(); };
                 drop.DragLeave += (s, e) => { ((DropZone)drop).Hot = false; drop.Invalidate(); };
@@ -274,6 +278,7 @@ class SongTool : Form
                 DragEnter += OnEnter; drop.DragEnter += OnEnter;
         DragDrop += OnDrop; drop.DragDrop += OnDrop;
         Say("Drop one or more .mp3 files. Finished .pkg files go in:\r\n" + Path.Combine(root, "PS4 Packages"));
+        Shown += (s, e) => { var wa = Screen.FromControl(this).WorkingArea; if (Height > wa.Height) { Height = wa.Height; Top = wa.Top; } };
         Shown += (s, e) => CheckUpdate();
         try { Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath); } catch { }
         LoadSettings();
@@ -390,7 +395,7 @@ class SongTool : Form
         Start(((string[])e.Data.GetData(DataFormats.FileDrop)));
     }
 
-    const string VERSION = "1.1.0";
+    const string VERSION = "1.1.1";
 
     StringBuilder tail = new StringBuilder();
     double density = 1.0; bool eu;
@@ -406,6 +411,20 @@ class SongTool : Form
         if (Regex.IsMatch(t, "cannot find the file|system cannot find")) return "A bundled tool is missing. Re-extract the whole tool folder (onyx, forge_official and runtime must stay next to SongTool.exe).";
         if (Regex.IsMatch(t, "being used by another process|Access to the path")) return "A file is locked or access was denied. Close anything using the song files and retry.";
         return fallback;
+    }
+
+    void ShowCredits()
+    {
+        MessageBox.Show(
+            "RB4DX Song Creator v" + VERSION + " - made by CoronaSend\r\n\r\n" +
+            "Built on the work of:\r\n" +
+            "  - Onyx - Michael Tolly (mtolly) - GPL v3\r\n" +
+            "  - LibForge / ForgeTool - Maxton; fork by LlysiX and mtolly - LGPL/GPL\r\n" +
+            "  - RB4DX and the Rock Band modding community\r\n" +
+            "  - librosa, numpy, FFmpeg and other open-source libraries\r\n" +
+            "  - iTunes, Internet Archive and Jamendo (cover art / free music search)\r\n\r\n" +
+            "Full licenses: THIRD-PARTY-NOTICES.md and README.md",
+            "Credits", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
     void OpenDiscord()
