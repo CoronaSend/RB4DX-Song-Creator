@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -395,7 +395,7 @@ class SongTool : Form
         Start(((string[])e.Data.GetData(DataFormats.FileDrop)));
     }
 
-    const string VERSION = "1.1.1";
+    const string VERSION = "1.1.2";
 
     StringBuilder tail = new StringBuilder();
     double density = 1.0; bool eu;
@@ -968,7 +968,16 @@ class SongTool : Form
                 doneSteps += makePkg ? 2 + (sendOn ? 1 : 0) : 1; SetProgress(tag + "cancelled");
                 return null;
             }
-            string buildDir = Path.Combine(root, "build", Path.GetFileNameWithoutExtension(mp3).Replace("(mp3.pm)", "").Trim('_', '-', ' '));
+            string bstem = Path.GetFileNameWithoutExtension(mp3).Replace("(mp3.pm)", "").Trim('_', '-', ' ');
+            if (bstem.Length > 40)
+            {
+                using (var md5 = System.Security.Cryptography.MD5.Create())
+                {
+                    string hex = BitConverter.ToString(md5.ComputeHash(Encoding.UTF8.GetBytes(bstem))).Replace("-", "").ToLowerInvariant();
+                    bstem = bstem.Substring(0, 30).TrimEnd('.', '_', ' ') + "_" + hex.Substring(0, 8);
+                }
+            }
+            string buildDir = Path.Combine(root, "build", bstem);
             string con = Directory.Exists(buildDir) ? Directory.GetFiles(buildDir, "*.con")
                 .OrderByDescending(File.GetLastWriteTime).FirstOrDefault() : null;
             if (rc != 0 || con == null)
@@ -1088,10 +1097,22 @@ class SongTool : Form
         if (sendOn) SendStep(pkg, row, "Bundle: ");
     }
 
+    int NextPkgNumber()
+    {
+        lock (tail)
+        {
+            string f = Path.Combine(root, "pkg_counter.txt"); int n = 0;
+            try { if (File.Exists(f)) int.TryParse(File.ReadAllText(f).Trim(), out n); } catch { }
+            n = (n + 1) % 1000000;
+            try { File.WriteAllText(f, n.ToString()); } catch { }
+            return n;
+        }
+    }
+
     string MakePkg(string con, string title, string outDir)
     {
         string id = Regex.Replace(title.ToUpper(), "[^A-Z0-9]", "");
-        id = (id + "0000000000000000").Substring(0, 16);
+        id = (id + "0000000000").Substring(0, 10) + NextPkgNumber().ToString("D6");
         Directory.CreateDirectory(outDir);
         lock (tail) tail.Clear();
         Say("Making PS4 .pkg...");

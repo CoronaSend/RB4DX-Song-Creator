@@ -11,3 +11,5 @@ update_url.txt
 *.zip
 dist/
 SongTool.exe
+pkg_counter.txt
+hw/

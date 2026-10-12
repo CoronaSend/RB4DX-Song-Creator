@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 build_song.py - MP3 -> RB3 custom song .con, built by Onyx.
@@ -23,7 +23,7 @@ import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VERSION = "1.1.1"
+VERSION = "1.1.2"
 
 try:
     import truststore
@@ -81,8 +81,12 @@ def main():
 
     mp3 = os.path.abspath(args.mp3)
     stem = stem_for(mp3)
+    dirname = stem
+    if len(dirname) > 40:
+        import hashlib
+        dirname = stem[:30].rstrip("._ ") + "_" + hashlib.md5(stem.encode()).hexdigest()[:8]
     short = shortname_for(args.title)
-    outdir = os.path.join(HERE, "build", stem)
+    outdir = os.path.join(HERE, "build", dirname)
     os.makedirs(outdir, exist_ok=True)
     py = sys.executable
 
