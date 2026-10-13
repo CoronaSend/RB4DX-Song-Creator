@@ -83,6 +83,19 @@ $bp = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(255, 20, 6
 $bp.LineJoin = 'Round'
 $g.DrawPolygon($bp, $bolt)
 
+# customization badge: paint palette, bottom-right
+$pal = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 245, 235, 215))
+$g.FillEllipse($pal, 140, 140, 104, 100)
+$pp = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(255, 20, 6, 6)), 5
+$g.DrawEllipse($pp, 140, 140, 104, 100)
+$hole = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 30, 10, 14))
+$g.FillEllipse($hole, 200, 200, 26, 22)
+$dots = @(@(158,160,235,50,60), @(184,152,255,215,40), @(210,160,60,220,90), @(152,188,60,140,255), @(160,214,190,80,230))
+foreach ($d in $dots) {
+    $db = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, $d[2], $d[3], $d[4]))
+    $g.FillEllipse($db, $d[0], $d[1], 22, 22)
+}
+
 $g.ResetClip()
 $edge = New-Object System.Drawing.Pen ([System.Drawing.Color]::FromArgb(255, 255, 110, 30)), 6
 $g.DrawPath($edge, $bg)

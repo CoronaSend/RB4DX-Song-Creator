@@ -23,7 +23,7 @@ import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-VERSION = "1.1.2"
+VERSION = "1.1.3"
 
 try:
     import truststore

@@ -1,4 +1,4 @@
-# RB4DX Song Creator
+# ULTIMATE RB4DX TOOL
 
 Turn any MP3 into a playable **Rock Band 4 (RB4DX)** custom song for a jailbroken PS4 - drag, drop, play.
 
@@ -8,7 +8,7 @@ Made by **CoronaSend**. Use the HELP / REPORT BUG button in the app (or the Disc
 
 ## Download
 
-Get the latest zip from the **Releases** page, extract it anywhere (keep the folder together) and run `SongTool.exe`.
+Get the latest zip from the **Releases** page, extract it anywhere (keep the folder together) and run `ULTIMATE RB4DX TOOL.exe`.
 No Python or other installs needed. Windows 10/11 only.
 
 See **[HOW TO USE.md](HOW%20TO%20USE.md)** for the full guide.
@@ -22,6 +22,7 @@ See **[HOW TO USE.md](HOW%20TO%20USE.md)** for the full guide.
 - Sends the .pkg to your PS4 over FTP (port 2121), with a connection / game check and a PS4 song manager.
 - WEB SEARCH for free / Creative Commons music (Internet Archive, Jamendo).
 - Cancel, copy log, one-click bug report.
+- **GAME CUSTOMIZATION** page: make custom RB4DX highways from your own photos (3 large photos, collage or backdrop), send them to the PS4, and manage / delete highways already on the console. Also: a Backgrounds tab, a Skins tab (crowd meter, score, solo box), a Backup / restore tab, a PS4 IP dropdown that remembers consoles, and a startup update check.
 
 ## Limitations
 
@@ -35,7 +36,7 @@ See **[HOW TO USE.md](HOW%20TO%20USE.md)** for the full guide.
 The repository contains the app and scripts only. The release zip additionally bundles `runtime\` (portable Python 3.14 with librosa, mido, numpy, scipy, soundfile, imageio-ffmpeg, Pillow), `onyx\` and `forge_official\`.
 
 ```
-csc.exe /target:winexe /win32icon:songtool.ico /out:SongTool.exe /r:System.Windows.Forms.dll /r:System.Drawing.dll SongTool.cs
+csc.exe /target:winexe /win32icon:songtool.ico /out:"ULTIMATE RB4DX TOOL.exe" /r:System.Windows.Forms.dll /r:System.Drawing.dll UltimateTool.cs HighwayMaker.cs CustomizeExtras.cs
 ```
 
 (C# 5 / .NET Framework 4 compiler.) Command-line build of a single song:

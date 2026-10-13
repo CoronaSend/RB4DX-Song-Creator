@@ -13,7 +13,7 @@ using System.Windows.Forms;
 class SongTool : Form
 {
     TextBox log; Label drop; string root; CheckBox bundle; TextBox packName;
-    TextBox ipBox; CheckBox sendBox; Button sendBtn; bool sendOn; string ip;
+    ComboBox ipBox; CheckBox sendBox; Button sendBtn; bool sendOn; string ip;
     ListView list; RockBar bar; Label status; Label pct; ComboBox densityBox; CheckBox euBox; Button cancelBtn; Process cur; volatile bool cancelled; Dictionary<string, string> covers = new Dictionary<string, string>();
     int totalSteps, doneSteps;
 
@@ -144,7 +144,7 @@ class SongTool : Form
     {
         root = AppDomain.CurrentDomain.BaseDirectory;
         AutoScaleMode = AutoScaleMode.None;
-        Text = "RB4DX Song Creator v" + VERSION + " - made by CoronaSend";                 ClientSize = new Size(740, 800);
+        Text = "ULTIMATE RB4DX TOOL v" + VERSION + " - made by CoronaSend";                 ClientSize = new Size(890, 800);
                 MinimumSize = Size; BackColor = BG; ForeColor = TEXT; StartPosition = FormStartPosition.CenterScreen;
         AllowDrop = true;
 
@@ -207,7 +207,7 @@ class SongTool : Form
         var header = new Panel { Dock = DockStyle.Top, Height = 62, Width = 740, BackColor = Color.FromArgb(8, 8, 10) };
         var title = new Label { Text = "TOOL MADE BY CORONASEND", ForeColor = Color.White, AutoSize = false,
             Left = 12, Top = 4, Width = 390, Height = 36, TextAlign = ContentAlignment.MiddleLeft, Font = new Font("Impact", 20) };
-        var sub = new Label { Text = "RB4DX SONG CREATOR:  MP3  \u2192  CHART  \u2192  PS4 PKG", ForeColor = DIM, AutoSize = false,
+        var sub = new Label { Text = "ULTIMATE RB4DX TOOL:  MP3  \u2192  CHART  \u2192  PS4 PKG", ForeColor = DIM, AutoSize = false,
             Left = 14, Top = 38, Width = 430, Height = 20, Font = new Font("Segoe UI", 8, FontStyle.Bold) };
         header.Controls.Add(title); header.Controls.Add(sub);
         var stripe = new Panel { Dock = DockStyle.Top, Height = 4, BackColor = RED };
@@ -236,8 +236,8 @@ class SongTool : Form
         var ps4row = new Panel { Dock = DockStyle.Top, Height = 40, Width = 740, BackColor = BG };
         ps4row.Controls.Add(new Label { Text = "PS4 IP:", Left = 14, Top = 12, Width = 56, ForeColor = TEXT, Font = new Font("Segoe UI", 9, FontStyle.Bold) });
         string ipFile = Path.Combine(root, "ps4_ip.txt");
-        ipBox = new TextBox { Text = File.Exists(ipFile) ? File.ReadAllText(ipFile).Trim() : "192.168.1.27", Left = 72, Top = 9, Width = 130,
-            BackColor = PANEL, ForeColor = ORANGE, BorderStyle = BorderStyle.FixedSingle };
+        ipBox = new ComboBox { Text = File.Exists(ipFile) ? File.ReadAllText(ipFile).Trim() : "192.168.1.27", Left = 72, Top = 8, Width = 130,
+                    BackColor = PANEL, ForeColor = ORANGE, FlatStyle = FlatStyle.Flat };
         sendBox = new CheckBox { Text = "Send to PS4 after building (FTP 2121)", Left = 216, Top = 10, Width = 300, ForeColor = TEXT,
             Font = new Font("Segoe UI", 9, FontStyle.Bold), FlatStyle = FlatStyle.Flat };
         sendBtn = Btn("SEND PKG TO PS4...", RED, 740 - 12 - 180, 180);
@@ -270,8 +270,55 @@ class SongTool : Form
         var creditsBtn = Btn("CREDITS", Color.FromArgb(70, 70, 90), 12, 100); creditsBtn.Top = 4; creditsBtn.Height = 28;
         creditsBtn.Click += (s, e) => ShowCredits();
         footer.Controls.Add(creditsBtn);
-        Controls.Add(logHost); Controls.Add(footer); Controls.Add(prog); Controls.Add(listHost); Controls.Add(toolsRow); Controls.Add(ps4row); Controls.Add(opts);         Controls.Add(drop); Controls.Add(stripe); Controls.Add(header);
+        var songsPage = new Panel { Dock = DockStyle.Fill, BackColor = BG };
+        songsPage.Controls.Add(logHost); songsPage.Controls.Add(footer); songsPage.Controls.Add(prog); songsPage.Controls.Add(listHost);
+        songsPage.Controls.Add(toolsRow); songsPage.Controls.Add(ps4row); songsPage.Controls.Add(opts); songsPage.Controls.Add(drop);
+        var customPage = new Panel { Dock = DockStyle.Fill, BackColor = BG, Visible = false };
+        var nav = new Panel { Dock = DockStyle.Left, Width = 150, BackColor = Color.FromArgb(14, 14, 18) };
+        var navSongs = Btn("SONGS", ORANGE, 10, 130); navSongs.Top = 14; navSongs.Height = 38; navSongs.Anchor = AnchorStyles.Top | AnchorStyles.Left; navSongs.ForeColor = Color.Black;
+        var navCust = Btn("GAME\nCUSTOMIZATION", Color.FromArgb(70, 70, 90), 10, 130); navCust.Top = 60; navCust.Height = 46; navCust.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+        nav.Controls.Add(navSongs); nav.Controls.Add(navCust);
+        Action<bool> showSongs = on =>
+        {
+            songsPage.Visible = on; customPage.Visible = !on;
+            navSongs.BackColor = on ? ORANGE : Color.FromArgb(70, 70, 90); navSongs.ForeColor = on ? Color.Black : Color.White;
+            navCust.BackColor = on ? Color.FromArgb(70, 70, 90) : Color.FromArgb(120, 60, 150); navCust.ForeColor = Color.White;
+            navSongs.FlatAppearance.MouseOverBackColor = Shade(navSongs.BackColor, 22); navCust.FlatAppearance.MouseOverBackColor = Shade(navCust.BackColor, 22);
+        };
+        navSongs.Click += (s, e) => showSongs(true);
+        navCust.Click += (s, e) => showSongs(false);
+        Controls.Add(songsPage); Controls.Add(customPage); Controls.Add(nav); Controls.Add(stripe); Controls.Add(header);
         Style(this);
+        var hwForm = new HighwayForm(root, () => ipBox.Text.Trim()) { TopLevel = false, FormBorderStyle = FormBorderStyle.None, Dock = DockStyle.Fill };
+        var subForms = new Form[] { hwForm,
+            new BackgroundForm(root, () => ipBox.Text.Trim()),
+            new SkinForm(root, () => ipBox.Text.Trim()),
+            new BackupForm(root, () => ipBox.Text.Trim()) };
+        string[] subNames = { "HIGHWAYS", "BACKGROUNDS", "SKINS", "BACKUP" };
+        var subNav = new Panel { Dock = DockStyle.Top, Height = 44, BackColor = BG };
+        var subBtns = new Button[subForms.Length];
+        Action<int> showSub = idx =>
+        {
+            for (int i = 0; i < subForms.Length; i++)
+            {
+                subForms[i].Visible = i == idx;
+                subBtns[i].BackColor = i == idx ? Color.FromArgb(120, 60, 150) : Color.FromArgb(70, 70, 90);
+                subBtns[i].FlatAppearance.MouseOverBackColor = Shade(subBtns[i].BackColor, 22);
+            }
+        };
+        for (int i = 0; i < subForms.Length; i++)
+        {
+            int idx = i;
+            subBtns[i] = Btn(subNames[i], Color.FromArgb(70, 70, 90), 12 + i * 138, 130); subBtns[i].Top = 8; subBtns[i].Height = 30; subBtns[i].Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            subBtns[i].Click += (s, e) => showSub(idx);
+            subNav.Controls.Add(subBtns[i]);
+            var sf = subForms[i]; sf.TopLevel = false; sf.FormBorderStyle = FormBorderStyle.None; sf.Dock = DockStyle.Fill;
+        }
+        Style(subNav);
+        foreach (var sf in subForms) customPage.Controls.Add(sf);
+        customPage.Controls.Add(subNav);
+        foreach (var sf in subForms) sf.Show();
+        showSub(0);
                 drop.DragEnter += (s, e) => { ((DropZone)drop).Hot = true; drop.Invalidate(); };
                 drop.DragLeave += (s, e) => { ((DropZone)drop).Hot = false; drop.Invalidate(); };
                 drop.DragDrop += (s, e) => { ((DropZone)drop).Hot = false; drop.Invalidate(); };
@@ -395,7 +442,7 @@ class SongTool : Form
         Start(((string[])e.Data.GetData(DataFormats.FileDrop)));
     }
 
-    const string VERSION = "1.1.2";
+    const string VERSION = "1.1.3";
 
     StringBuilder tail = new StringBuilder();
     double density = 1.0; bool eu;
@@ -404,11 +451,11 @@ class SongTool : Form
     {
         string t; lock (tail) t = tail.ToString() + "\n" + extra;
         if (Regex.IsMatch(t, "Unable to connect|actively refused|No connection could be made|timed out|remote name could not")) return "Can't reach the PS4 at " + ip + ":2121. Check it is on, GoldHEN is loaded and the IP is right (use TEST PS4).";
-        if (t.Contains("No module named")) return "A Python library is missing. Keep the 'runtime' folder next to SongTool.exe (re-extract the whole tool folder).";
+        if (t.Contains("No module named")) return "A Python library is missing. Keep the 'runtime' folder next to the tool (re-extract the whole tool folder).";
         if (t.Contains("simultaneous")) return "The auto-chart put too many drum hits at once. Set Chart to 'Easier' and try again.";
         if (Regex.IsMatch(t, "MIDI Compiler[^\n]*(ERROR|Error)")) return "Rock Band's chart validator rejected the generated chart. Try Chart = 'Easier', or report it with COPY LOG.";
         if (Regex.IsMatch(t, "NoBackendError|Error decoding|audioread|Invalid data found")) return "The MP3 could not be read. It may be corrupt - try another copy.";
-        if (Regex.IsMatch(t, "cannot find the file|system cannot find")) return "A bundled tool is missing. Re-extract the whole tool folder (onyx, forge_official and runtime must stay next to SongTool.exe).";
+        if (Regex.IsMatch(t, "cannot find the file|system cannot find")) return "A bundled tool is missing. Re-extract the whole tool folder (onyx, forge_official and runtime must stay next to the tool).";
         if (Regex.IsMatch(t, "being used by another process|Access to the path")) return "A file is locked or access was denied. Close anything using the song files and retry.";
         return fallback;
     }
@@ -416,7 +463,7 @@ class SongTool : Form
     void ShowCredits()
     {
         MessageBox.Show(
-            "RB4DX Song Creator v" + VERSION + " - made by CoronaSend\r\n\r\n" +
+            "ULTIMATE RB4DX TOOL v" + VERSION + " - made by CoronaSend\r\n\r\n" +
             "Built on the work of:\r\n" +
             "  - Onyx - Michael Tolly (mtolly) - GPL v3\r\n" +
             "  - LibForge / ForgeTool - Maxton; fork by LlysiX and mtolly - LGPL/GPL\r\n" +
@@ -455,15 +502,24 @@ class SongTool : Form
 
     void CheckUpdate()
     {
-        string f = Path.Combine(root, "update_url.txt");
-        if (!File.Exists(f)) return;
-        string url = File.ReadAllText(f).Trim(); if (!url.StartsWith("http")) return;
         new Thread(() =>
         {
             try
             {
-                string v = new WebClient().DownloadString(url).Trim(); Version a, b;
-                if (Version.TryParse(v, out a) && Version.TryParse(VERSION, out b) && a > b) Say("A newer version (" + v + ") is available - ask on the Discord.");
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072 | SecurityProtocolType.Tls;
+                var wc = new WebClient(); wc.Headers["User-Agent"] = "ULTIMATE-RB4DX-TOOL";
+                string json = wc.DownloadString("https://api.github.com/repos/CoronaSend/ULTIMATE-RB4DX-TOOL/releases/latest");
+                var m = System.Text.RegularExpressions.Regex.Match(json, "\"tag_name\"\\s*:\\s*\"v?([0-9.]+)\"");
+                var u = System.Text.RegularExpressions.Regex.Match(json, "\"html_url\"\\s*:\\s*\"(https://github.com/[^\"]+/releases/tag/[^\"]+)\"");
+                Version a, b;
+                if (!m.Success || !Version.TryParse(m.Groups[1].Value, out a) || !Version.TryParse(VERSION, out b) || a <= b) return;
+                string page = u.Success ? u.Groups[1].Value : "https://github.com/CoronaSend/ULTIMATE-RB4DX-TOOL/releases/latest";
+                Say("A newer version (" + a + ") is available: " + page);
+                BeginInvoke((MethodInvoker)delegate
+                {
+                    if (MessageBox.Show(this, "Version " + a + " is available (you have " + VERSION + ").\r\n\r\nOpen the download page?", "Update available",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes) Process.Start(page);
+                });
             }
             catch { }
         }) { IsBackground = true }.Start();
@@ -471,7 +527,7 @@ class SongTool : Form
 
     void CopyLog()
     {
-        try { Clipboard.SetText("RB4DX Song Creator v" + VERSION + " log\r\nPython: " + PyExe() + "\r\nPS4: " + ipBox.Text + "\r\n\r\n" + log.Text); Say("Log copied to the clipboard - paste it in Discord."); }
+        try { Clipboard.SetText("ULTIMATE RB4DX TOOL v" + VERSION + " log\r\nPython: " + PyExe() + "\r\nPS4: " + ipBox.Text + "\r\n\r\n" + log.Text); Say("Log copied to the clipboard - paste it in Discord."); }
         catch (Exception ex) { Say("Could not copy: " + ex.Message); }
     }
 
@@ -487,6 +543,7 @@ class SongTool : Form
                 int k = line.IndexOf('='); if (k < 1) continue;
                 string key = line.Substring(0, k).Trim(), v = line.Substring(k + 1).Trim();
                 if (key == "ip" && v.Length > 0) ipBox.Text = v;
+                else if (key == "ips") { foreach (var p in v.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)) if (!ipBox.Items.Contains(p)) ipBox.Items.Add(p); }
                 else if (key == "send") sendBox.Checked = v == "1";
                 else if (key == "bundle") bundle.Checked = v == "1";
                 else if (key == "pack" && v.Length > 0) packName.Text = v;
@@ -501,7 +558,9 @@ class SongTool : Form
     {
         try
         {
-            File.WriteAllLines(SettingsPath, new[] { "ip=" + ipBox.Text.Trim(), "send=" + (sendBox.Checked ? "1" : "0"),
+            string cur = ipBox.Text.Trim(); if (cur.Length > 0 && !ipBox.Items.Contains(cur)) ipBox.Items.Add(cur);
+            var ipl = new List<string>(); foreach (var o in ipBox.Items) ipl.Add(o.ToString());
+            File.WriteAllLines(SettingsPath, new[] { "ip=" + cur, "ips=" + string.Join(",", ipl.ToArray()), "send=" + (sendBox.Checked ? "1" : "0"),
                 "bundle=" + (bundle.Checked ? "1" : "0"), "pack=" + packName.Text.Trim(), "density=" + densityBox.SelectedIndex,
                 "eu=" + (euBox.Checked ? "1" : "0") });
         }

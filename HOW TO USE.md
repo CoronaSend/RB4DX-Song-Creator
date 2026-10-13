@@ -1,4 +1,4 @@
-# RB4DX Song Creator - How to use
+# ULTIMATE RB4DX TOOL - How to use
 
 Turns an MP3 into a playable Rock Band 4 (RB4DX) custom song for a jailbroken PS4.
 MP3 -> auto-made chart -> Rock Band 3 CON -> PS4 `.pkg` -> (optional) sent to your PS4.
@@ -9,7 +9,7 @@ MP3 -> auto-made chart -> Rock Band 3 CON -> PS4 `.pkg` -> (optional) sent to yo
 - No Python or other installs needed - everything is bundled. Keep the whole folder together.
 
 ## Make a song
-1. Open `SongTool.exe`.
+1. Open `ULTIMATE RB4DX TOOL.exe`.
 2. Drag one or more MP3s (or a whole folder of MP3s) onto the window, or click the drop area / **BROWSE...** (Ctrl+O).
 3. A **Check song details** window appears for each song:
    - Edit **artist** and **title**. **LOOK UP** fills artist, title, year and genre from iTunes.
@@ -35,6 +35,12 @@ MP3 -> auto-made chart -> Rock Band 3 CON -> PS4 `.pkg` -> (optional) sent to yo
 - **COPY LOG**: copies the log to paste in a bug report.
 - **CLEAN UP**: deletes the temporary `build` folder.
 - **HELP / REPORT BUG**: opens the Discord (link in `discord.txt`).
+- **GAME CUSTOMIZATION** (left sidebar): the Highway Maker. Type a name, pick a layout, add your photos, then **SEND TO PS4** (uses the PS4 IP from the SONGS page). Fully restart Rock Band 4, then pick the name under Highway in settings. **MANAGE HIGHWAYS ON PS4** lists and deletes highways on the console. Names are always lowercase. The **BACKGROUNDS** tab does the same for a 1920x1080 background from one photo (with a darken slider).
+- **SKINS** tab: pick a crowd meter, score or solo box skin on the PS4 (it sets the size), **EXPORT AS PNG**, edit it in any image editor, then **IMPORT IMAGE**, name it and **SEND TO PS4**. Skins stored in a compressed format can't be edited.
+- **BACKUP** tab: **BACK UP PS4 TEXTURES TO PC** copies every custom texture to a dated folder; **RESTORE BACKUP TO PS4** puts a folder back (files with the same name are overwritten).
+- Sending to the PS4 first checks the console is reachable and asks before replacing a file with the same name.
+- The **PS4 IP** box is a dropdown that remembers every IP you have used.
+- The tool checks GitHub at startup and tells you if a newer version is out.
 - Settings (IP, send, bundle, chart level, EU) are remembered in `settings.ini`.
 
 ## Troubleshooting
